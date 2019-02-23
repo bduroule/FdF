@@ -14,40 +14,58 @@
 #include <unistd.h>
 #include "fdf.h"
 
+int		out(void *param)
+{
+	(void)param;
+	exit(0);
+	return (0);
+}
+
+void	error_file(int fd, char *av)
+{
+	errno = 0;
+	read(fd, av, 0);
+	if (errno != 0)
+	{
+		perror("error ");
+		exit(0);
+	}
+}
+
+void	fonction_call(t_file *file)
+{
+	display(file);
+	mlx_hook(file->win_ptr, 4, 0, mouse_press, file);
+	mlx_hook(file->win_ptr, 2, 0, deal_key, (void *)file);
+	mlx_hook(file->win_ptr, 17, 0, out, file);
+	mlx_loop(file->mlx_ptr);
+}
+
 int		main(int ac, char **av)
 {
-	//int i;
 	int		fd;
-	t_map	*map;
 	t_file	*file;
 
-	map = NULL;
-	file = malloc(sizeof(t_file));
-	//if (!(map = (t_map*)malloc(sizeof(t_map))))
-	//return (0);
 	if (ac != 2)
 		return (write(1, "usage: ./fdf map\n", 17));
-	fd = open(av[1], O_RDONLY);
-	/*
-	t_file *file;
 	file = malloc(sizeof(t_file));
-	file->mlx_ptr = mlx_init();
-	file->win_ptr = mlx_new_window(file->mlx_ptr, 500, 500, "mlx 42");
-	mlx_pixel_put(file->mlx_ptr, file->win_ptr, 250, 250, 250);
-	mlx_key_hook(file->win_ptr, deal_key, (void *) file);
-	mlx_loop(file->mlx_ptr);*/
-	split_map(fd, &map, file);
-	display(file);
-	/*while (map)
+	file->map = NULL;
+	if (ft_strcchr(av[1], '/'))
+		file->av = ft_strrchr(av[1], '/') + 1;
+	else
+		file->av = av[1];
+	if ((fd = open(av[1], O_RDONLY)) < 1)
 	{
-		i = 0;
-		while (i < 19)
-		{
-			ft_putnbr(map->i_tab[i]);
-			i++;
-		}
-		write(1, "\n", 1);
-		map = map->next;
-	}*/
+		free(file);
+		return (write(1, "file invalide\n", 14));
+	}
+	error_file(fd, av[1]);
+	color(file);
+	event_fdf(file);
+	if (!(split_map(fd, &file->map, file)))
+		return (write(1, "map error\n", 10));
+	file->mlx_ptr = mlx_init();
+	file->win_ptr = mlx_new_window(file->mlx_ptr, WIDTH, HEIGHT, "fdf");
+	fonction_call(file);
 	return (0);
 }
