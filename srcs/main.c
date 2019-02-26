@@ -6,7 +6,7 @@
 /*   By: jadonvez <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/12/04 15:54:42 by jadonvez     #+#   ##    ##    #+#       */
-/*   Updated: 2019/01/16 17:14:55 by jadonvez    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/02/25 16:20:29 by jadonvez    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -57,7 +57,7 @@ int		main(int ac, char **av)
 	if ((fd = open(av[1], O_RDONLY)) < 1)
 	{
 		free(file);
-		return (write(1, "file invalide\n", 14));
+		return (write(1, "invalide file\n", 14));
 	}
 	error_file(fd, av[1]);
 	color(file);
